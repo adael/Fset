@@ -1,22 +1,19 @@
-<?
+<?php
 /**
- * Clase fset (FastSet)
- * Nota: en el ERP hay que usar siempre que se pueda esta clase en lugar de Set
- * Alternativa de uso más rápido a libs/Set de cakephp, sirve para operaciones con arrays aunque está más limitada.
- * A diferencia de Set de cakephp, esta clase opera con valores por referencia, por lo que se consume menos memoria
- * y se ejecutan las llamadas de forma más rápida.
- * @name fset
+ * fset class
+ * A standalone lightweight class for manage arrays with dot notation.
+ *
  * @author Carlos Gant <carlos@aicor.com>
- * Más información:
- * Para las operaciones de obtener un valor de un array usnado la notación de separador por puntos, este algoritmo
- * es más de 10 veces más rápido que set::classicExtract de cakephp, pero solo soporta rutas completas.
- *		Clave válida: Clientes.1.nombre
- *		Clave no válida: {n}.Cliente.nombre (y en general cualquier otra notación que no sea como la clave válida)
- *		Clave no válida: /Cliente/id (esta clase no soporta XPATH, ni tampoco lo pretende)
- **/
+ */
 class fset {
 
-	function get(array &$data, $path){
+	/**
+	 * Retrieve an element of the array
+	 * @param array $data the array to extract the item
+	 * @param string $path the path to the item
+	 * @return array
+	 */
+	static function get(array &$data, $path){
 		$keys = explode('.', $path);
 		foreach($keys as $k){
 			if(isset($data[$k])){
@@ -28,7 +25,13 @@ class fset {
 		return $data;
 	}
 
-	function set(array &$data, $path, $value){
+	/**
+	 * Insert an element into the array
+	 * @param array $data the array to insert the item
+	 * @param string $path the path where to insert the item into the array
+	 * @param mixed $value the value
+	 */
+	static function set(array &$data, $path, $value){
 		$keys = explode('.', $path);
 		$last = array_pop($keys);
 		foreach($keys as $k){
@@ -42,7 +45,16 @@ class fset {
 		$data[$last] = $value;
 	}
 
-	function count(array &$data, $path){
+	/**
+	 * Count the elements of an array item.
+	 * @example
+	 *		$a = array('The' => array('Items' => array('one', 'two', 'tree')));
+	 *		echo fset::count($a, 'The.Items'); // => gives 3
+	 * @param array $data
+	 * @param string $path
+	 * @return int number of items or null if the key not exists.
+	 */
+	static function count(array &$data, $path){
 		$keys = explode('.', $path);
 		$last = array_pop($keys);
 		foreach($keys as $k){
@@ -55,7 +67,13 @@ class fset {
 		return isset($data[$last]) && is_array($data[$last]) ? count($data[$last]) : null;
 	}
 
-	function del(array &$data, $path){
+	/**
+	 * Deletes a key of the array
+	 * @param array $data array to use
+	 * @param string $path path to the key
+	 * @return void
+	 */
+	static function del(array &$data, $path){
 		$keys = explode('.', $path);
 		$last = array_pop($keys);
 		foreach($keys as $k){
@@ -68,6 +86,12 @@ class fset {
 		unset($data[$last]);
 	}
 
+	/**
+	 * Check if a key is set in the array
+	 * @param array $data
+	 * @param string $path
+	 * @return boolean true if the key isset, false if not, null if the key not exists
+	 */
 	static function is_set(array &$data, $path){
 		$keys = explode('.', $path);
 		$last = array_pop($keys);
@@ -81,6 +105,12 @@ class fset {
 		return isset($data[$last]);
 	}
 
+	/**
+	 * Check if a key is empty in the array	 *
+	 * @param array $data
+	 * @param string $path
+	 * @return boolean true if the key is empty or not exists, false if exists and is not empty.
+	 */
 	static function is_empty(array &$data, $path){
 		$keys = explode('.', $path);
 		$last = array_pop($keys);
