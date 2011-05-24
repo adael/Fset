@@ -99,7 +99,7 @@ class fset {
 			if(isset($data[$k]) && is_array($data[$k])){
 				$data =& $data[$k];
 			}else{
-				return false;
+				return null;
 			}
 		}
 		return isset($data[$last]);
