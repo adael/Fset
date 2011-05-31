@@ -64,7 +64,7 @@ class fset {
 				return null;
 			}
 		}
-		return isset($data[$last]) && is_array($data[$last]) ? count($data[$last]) : null;
+		return isset($data[$last]) && is_array($data[$last]) ? sizeOf($data[$last]) : null;
 	}
 
 	/**
