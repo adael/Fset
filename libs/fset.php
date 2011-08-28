@@ -5,7 +5,7 @@
  *
  * @author Carlos Gant <carlos@aicor.com>
  */
-class fset {
+class Fset {
 
 	/**
 	 * Retrieve an element of the array
