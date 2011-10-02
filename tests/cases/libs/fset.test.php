@@ -8,7 +8,7 @@ App::import('Lib', 'fset');
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  */
-class FsetTest extends CakeTestCase{
+class FsetTest extends CakeTestCase {
 
 	/**
 	 * testKeyCheck method
@@ -16,7 +16,7 @@ class FsetTest extends CakeTestCase{
 	 * @access public
 	 * @return void
 	 */
-	function testKeyCheck(){
+	function testKeyCheck() {
 		$data = array('Multi' => array('dimensonal' => array('array')));
 		$this->assertTrue(fset::is_set($data, 'Multi.dimensonal'));
 		$this->assertFalse(fset::is_set($data, 'Multi.dimensonal.array'));
@@ -54,7 +54,7 @@ class FsetTest extends CakeTestCase{
 	 * @access public
 	 * @return void
 	 */
-	function testClassicExtract(){
+	function testGet() {
 		$a = array(
 			array('Article' => array('id' => 1, 'title' => 'Article 1')),
 			array('Article' => array('id' => 2, 'title' => 'Article 2')),
@@ -80,6 +80,10 @@ class FsetTest extends CakeTestCase{
 		$result = fset::get($a, 'Customer.long.long.long.long');
 		$excepted = 'path';
 		$this->assertIdentical($result, $excepted);
+
+		$result = fset::get($a, 'Customer.inexistent.key', 'check_default_value');
+		$excepted = 'check_default_value';
+		$this->assertIdentical($result, $excepted);
 	}
 
 	/**
@@ -88,7 +92,7 @@ class FsetTest extends CakeTestCase{
 	 * @access public
 	 * @return void
 	 */
-	function testInsert(){
+	function testSet() {
 		$a = array(
 			'pages' => array('name' => 'page')
 		);
@@ -133,7 +137,7 @@ class FsetTest extends CakeTestCase{
 	 * @access public
 	 * @return void
 	 */
-	function testRemove(){
+	function testDel() {
 		$a = array(
 			'pages' => array('name' => 'page'),
 			'files' => array('name' => 'files')
@@ -179,7 +183,7 @@ class FsetTest extends CakeTestCase{
 	 * @access public
 	 * @return void
 	 */
-	function testIsSet(){
+	function testIsSet() {
 		$set = array(
 			'My Index 1' => array('First' => 'The first item')
 		);
@@ -201,7 +205,7 @@ class FsetTest extends CakeTestCase{
 	 * @access public
 	 * @return void
 	 */
-	function testWritingWithFunkyKeys(){
+	function testWritingWithFunkyKeys() {
 		$set = array();
 		fset::set($set, 'Session Test', "test");
 		$this->assertEqual(fset::get($set, 'Session Test'), 'test');
@@ -214,13 +218,13 @@ class FsetTest extends CakeTestCase{
 		$this->assertTrue(fset::is_set($set, 'Session Test.Test Case'));
 	}
 
-	function testCount(){
-		$a = array('Customer' => array('tags' => array(1,2,3,4,5)));
+	function testCount() {
+		$a = array('Customer' => array('tags' => array(1, 2, 3, 4, 5)));
 		$result = fset::count($a, 'Customer.tags');
 		$this->assertTrue($result, 5);
 	}
 
-	function testIsEmpty(){
+	function testIsEmpty() {
 		$a = array('Customer' => array('name' => 'John', 'phone' => '', 'tags' => array(), 'age' => 0, 'other' => '0', 'array' => array(0)));
 
 		$this->assertFalse(fset::is_empty($a, 'Customer.name'));
@@ -229,8 +233,23 @@ class FsetTest extends CakeTestCase{
 		$this->assertTrue(fset::is_empty($a, 'Customer.tags'));
 		$this->assertTrue(fset::is_empty($a, 'Customer.age'));
 		$this->assertTrue(fset::is_empty($a, 'Customer.other'));
-
 	}
 
+	function testEquals() {
+		$a = array('Customer' => array('name' => 'John', 'age' => '30', 'tags' => array(), 'age' => 0, 'other' => '0', 'array' => array(0)));
+		$b = array('Customer' => array('name' => 'Bob', 'age' => 30, 'tags' => array(), 'age' => 0, 'other' => '0', 'array' => array(0)));
+
+		$result = fset::equals($a, $b, 'Customer.name');
+		$expected = false;
+		$this->assertIdentical($result, $expected);
+
+		$result = fset::equals($a, $b, 'Customer.age');
+		$expected = true;
+		$this->assertIdentical($result, $expected);
+
+		$result = fset::equals($a, $b, 'Customer.name', true);
+		$expected = false;
+		$this->assertIdentical($result, $expected);
+	}
 
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * fset class
  * A standalone lightweight class for manage arrays with dot notation.
@@ -11,15 +12,16 @@ class Fset {
 	 * Retrieve an element of the array
 	 * @param array $data the array to extract the item
 	 * @param string $path the path to the item
+	 * @param mixed $def default value if key not found
 	 * @return array
 	 */
-	static function get(array &$data, $path){
+	static function get(array &$data, $path, $def = null) {
 		$keys = explode('.', $path);
 		foreach($keys as $k){
 			if(isset($data[$k])){
-				$data =& $data[$k];
+				$data = & $data[$k];
 			}else{
-				return null;
+				return $def;
 			}
 		}
 		return $data;
@@ -31,15 +33,15 @@ class Fset {
 	 * @param string $path the path where to insert the item into the array
 	 * @param mixed $value the value
 	 */
-	static function set(array &$data, $path, $value){
+	static function set(array &$data, $path, $value) {
 		$keys = explode('.', $path);
 		$last = array_pop($keys);
 		foreach($keys as $k){
 			if(isset($data[$k]) && is_array($data[$k])){
-				$data =& $data[$k];
+				$data = & $data[$k];
 			}else{
 				$data[$k] = array();
-				$data =& $data[$k];
+				$data = & $data[$k];
 			}
 		}
 		$data[$last] = $value;
@@ -48,18 +50,18 @@ class Fset {
 	/**
 	 * Count the elements of an array item.
 	 * @example
-	 *		$a = array('The' => array('Items' => array('one', 'two', 'tree')));
-	 *		echo fset::count($a, 'The.Items'); // => gives 3
+	 * 		$a = array('The' => array('Items' => array('one', 'two', 'tree')));
+	 * 		echo fset::count($a, 'The.Items'); // => gives 3
 	 * @param array $data
 	 * @param string $path
 	 * @return int number of items or null if the key not exists.
 	 */
-	static function count(array &$data, $path){
+	static function count(array &$data, $path) {
 		$keys = explode('.', $path);
 		$last = array_pop($keys);
 		foreach($keys as $k){
 			if(isset($data[$k]) && is_array($data[$k])){
-				$data =& $data[$k];
+				$data = & $data[$k];
 			}else{
 				return null;
 			}
@@ -73,12 +75,12 @@ class Fset {
 	 * @param string $path path to the key
 	 * @return void
 	 */
-	static function del(array &$data, $path){
+	static function del(array &$data, $path) {
 		$keys = explode('.', $path);
 		$last = array_pop($keys);
 		foreach($keys as $k){
 			if(isset($data[$k]) && is_array($data[$k])){
-				$data =& $data[$k];
+				$data = & $data[$k];
 			}else{
 				return;
 			}
@@ -92,12 +94,12 @@ class Fset {
 	 * @param string $path
 	 * @return boolean true if the key isset, false if not, null if the key not exists
 	 */
-	static function is_set(array &$data, $path){
+	static function is_set(array &$data, $path) {
 		$keys = explode('.', $path);
 		$last = array_pop($keys);
 		foreach($keys as $k){
 			if(isset($data[$k]) && is_array($data[$k])){
-				$data =& $data[$k];
+				$data = & $data[$k];
 			}else{
 				return null;
 			}
@@ -111,17 +113,33 @@ class Fset {
 	 * @param string $path
 	 * @return boolean true if the key is empty or not exists, false if exists and is not empty.
 	 */
-	static function is_empty(array &$data, $path){
+	static function is_empty(array &$data, $path) {
 		$keys = explode('.', $path);
 		$last = array_pop($keys);
 		foreach($keys as $k){
 			if(isset($data[$k]) && is_array($data[$k])){
-				$data =& $data[$k];
+				$data = & $data[$k];
 			}else{
 				return true;
 			}
 		}
 		return empty($data[$last]);
+	}
+
+	/**
+	 * Check if a key have the same value in two arrays
+	 * @param array $array_a
+	 * @param array $array_b
+	 * @param string $path
+	 * @param bool $strict
+	 * @return bool
+	 */
+	static function equals($array_a, $array_b, $path, $strict = false) {
+		if($strict){
+			return fset::get($array_a, $path) == fset::get($array_b, $path);
+		}else{
+			return fset::get($array_a, $path) === fset::get($array_b, $path);
+		}
 	}
 
 }
