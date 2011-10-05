@@ -135,10 +135,12 @@ class Fset {
 	 * @return bool
 	 */
 	static function equals($array_a, $array_b, $path, $strict = false) {
+		$a = fset::get($array_a, $path);
+		$b = fset::get($array_b, $path);
 		if($strict){
-			return fset::get($array_a, $path) == fset::get($array_b, $path);
+			return $a === $b;
 		}else{
-			return fset::get($array_a, $path) === fset::get($array_b, $path);
+			return $a == $b;
 		}
 	}
 
