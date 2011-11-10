@@ -51,7 +51,7 @@ class Fset {
 	 * Count the elements of an array item.
 	 * @example
 	 * 		$a = array('The' => array('Items' => array('one', 'two', 'tree')));
-	 * 		echo fset::count($a, 'The.Items'); // => gives 3
+	 * 		echo Fset::count($a, 'The.Items'); // => gives 3
 	 * @param array $data
 	 * @param string $path
 	 * @return int number of items or null if the key not exists.
@@ -135,8 +135,8 @@ class Fset {
 	 * @return bool
 	 */
 	static function equals($array_a, $array_b, $path, $strict = false) {
-		$a = fset::get($array_a, $path);
-		$b = fset::get($array_b, $path);
+		$a = Fset::get($array_a, $path);
+		$b = Fset::get($array_b, $path);
 		if($strict){
 			return $a === $b;
 		}else{

@@ -18,8 +18,8 @@ class FsetTest extends CakeTestCase {
 	 */
 	function testKeyCheck() {
 		$data = array('Multi' => array('dimensonal' => array('array')));
-		$this->assertTrue(fset::is_set($data, 'Multi.dimensonal'));
-		$this->assertFalse(fset::is_set($data, 'Multi.dimensonal.array'));
+		$this->assertTrue(Fset::is_set($data, 'Multi.dimensonal'));
+		$this->assertFalse(Fset::is_set($data, 'Multi.dimensonal.array'));
 
 		$data = array(
 			array(
@@ -41,11 +41,11 @@ class FsetTest extends CakeTestCase {
 				'Tag' => array()
 			)
 		);
-		$this->assertTrue(fset::is_set($data, '0.Article.user_id'));
-		$this->assertTrue(fset::is_set($data, '0.Comment.0.id'));
-		$this->assertFalse(fset::is_set($data, '0.Comment.0.id.0'));
-		$this->assertTrue(fset::is_set($data, '0.Article.user_id'));
-		$this->assertFalse(fset::is_set($data, '0.Article.user_id.a'));
+		$this->assertTrue(Fset::is_set($data, '0.Article.user_id'));
+		$this->assertTrue(Fset::is_set($data, '0.Comment.0.id'));
+		$this->assertFalse(Fset::is_set($data, '0.Comment.0.id.0'));
+		$this->assertTrue(Fset::is_set($data, '0.Article.user_id'));
+		$this->assertFalse(Fset::is_set($data, '0.Article.user_id.a'));
 	}
 
 	/**
@@ -61,11 +61,11 @@ class FsetTest extends CakeTestCase {
 			array('Article' => array('id' => 3, 'title' => 'Article 3'))
 		);
 
-		$result = fset::get($a, '1.Article.title');
+		$result = Fset::get($a, '1.Article.title');
 		$expected = 'Article 2';
 		$this->assertIdentical($result, $expected);
 
-		$result = fset::get($a, '3.Article.title');
+		$result = Fset::get($a, '3.Article.title');
 		$expected = null;
 		$this->assertIdentical($result, $expected);
 
@@ -73,15 +73,15 @@ class FsetTest extends CakeTestCase {
 				'name' => 'john',
 				'long' => array('long' => array('long' => array('long' => 'path')))
 				));
-		$result = fset::get($a, 'Customer.name');
+		$result = Fset::get($a, 'Customer.name');
 		$excepted = 'john';
 		$this->assertIdentical($result, $excepted);
 
-		$result = fset::get($a, 'Customer.long.long.long.long');
+		$result = Fset::get($a, 'Customer.long.long.long.long');
 		$excepted = 'path';
 		$this->assertIdentical($result, $excepted);
 
-		$result = fset::get($a, 'Customer.inexistent.key', 'check_default_value');
+		$result = Fset::get($a, 'Customer.inexistent.key', 'check_default_value');
 		$excepted = 'check_default_value';
 		$this->assertIdentical($result, $excepted);
 	}
@@ -98,7 +98,7 @@ class FsetTest extends CakeTestCase {
 		);
 
 
-		fset::set($a, 'files', array('name' => 'files'));
+		Fset::set($a, 'files', array('name' => 'files'));
 		$expected = array(
 			'pages' => array('name' => 'page'),
 			'files' => array('name' => 'files')
@@ -108,7 +108,7 @@ class FsetTest extends CakeTestCase {
 		$a = array(
 			'pages' => array('name' => 'page')
 		);
-		fset::set($a, 'pages.name', array());
+		Fset::set($a, 'pages.name', array());
 		$expected = array(
 			'pages' => array('name' => array()),
 		);
@@ -121,7 +121,7 @@ class FsetTest extends CakeTestCase {
 			)
 		);
 
-		fset::set($a, 'pages.1.vars', array('title' => 'page title'));
+		Fset::set($a, 'pages.1.vars', array('title' => 'page title'));
 		$expected = array(
 			'pages' => array(
 				0 => array('name' => 'main'),
@@ -143,7 +143,7 @@ class FsetTest extends CakeTestCase {
 			'files' => array('name' => 'files')
 		);
 
-		fset::del($a, 'files', array('name' => 'files'));
+		Fset::del($a, 'files', array('name' => 'files'));
 		$expected = array(
 			'pages' => array('name' => 'page')
 		);
@@ -156,7 +156,7 @@ class FsetTest extends CakeTestCase {
 			)
 		);
 
-		fset::del($a, 'pages.1.vars', array('title' => 'page title'));
+		Fset::del($a, 'pages.1.vars', array('title' => 'page title'));
 		$expected = array(
 			'pages' => array(
 				0 => array('name' => 'main'),
@@ -173,7 +173,7 @@ class FsetTest extends CakeTestCase {
 		);
 
 		$excepted = $a;
-		fset::del($a, 'pages.2.vars', array('title' => 'page title'));
+		Fset::del($a, 'pages.2.vars', array('title' => 'page title'));
 		$this->assertIdentical($a, $excepted);
 	}
 
@@ -187,16 +187,16 @@ class FsetTest extends CakeTestCase {
 		$set = array(
 			'My Index 1' => array('First' => 'The first item')
 		);
-		$this->assertTrue(fset::is_set($set, 'My Index 1.First'));
-		$this->assertTrue(fset::is_set($set, 'My Index 1'));
+		$this->assertTrue(Fset::is_set($set, 'My Index 1.First'));
+		$this->assertTrue(Fset::is_set($set, 'My Index 1'));
 
 		$set = array(
 			'My Index 1' => array('First' => array('Second' => array('Third' => array('Fourth' => 'Heavy. Nesting.'))))
 		);
-		$this->assertTrue(fset::is_set($set, 'My Index 1.First.Second'));
-		$this->assertTrue(fset::is_set($set, 'My Index 1.First.Second.Third'));
-		$this->assertTrue(fset::is_set($set, 'My Index 1.First.Second.Third.Fourth'));
-		$this->assertFalse(fset::is_set($set, 'My Index 1.First.Seconds.Third.Fourth'));
+		$this->assertTrue(Fset::is_set($set, 'My Index 1.First.Second'));
+		$this->assertTrue(Fset::is_set($set, 'My Index 1.First.Second.Third'));
+		$this->assertTrue(Fset::is_set($set, 'My Index 1.First.Second.Third.Fourth'));
+		$this->assertFalse(Fset::is_set($set, 'My Index 1.First.Seconds.Third.Fourth'));
 	}
 
 	/**
@@ -207,47 +207,47 @@ class FsetTest extends CakeTestCase {
 	 */
 	function testWritingWithFunkyKeys() {
 		$set = array();
-		fset::set($set, 'Session Test', "test");
-		$this->assertEqual(fset::get($set, 'Session Test'), 'test');
+		Fset::set($set, 'Session Test', "test");
+		$this->assertEqual(Fset::get($set, 'Session Test'), 'test');
 
-		fset::del($set, 'Session Test');
-		$this->assertFalse(fset::is_set($set, 'Session Test'));
+		Fset::del($set, 'Session Test');
+		$this->assertFalse(Fset::is_set($set, 'Session Test'));
 
 		$set = array();
-		fset::set($set, 'Session Test.Test Case', "test");
-		$this->assertTrue(fset::is_set($set, 'Session Test.Test Case'));
+		Fset::set($set, 'Session Test.Test Case', "test");
+		$this->assertTrue(Fset::is_set($set, 'Session Test.Test Case'));
 	}
 
 	function testCount() {
 		$a = array('Customer' => array('tags' => array(1, 2, 3, 4, 5)));
-		$result = fset::count($a, 'Customer.tags');
+		$result = Fset::count($a, 'Customer.tags');
 		$this->assertTrue($result, 5);
 	}
 
 	function testIsEmpty() {
 		$a = array('Customer' => array('name' => 'John', 'phone' => '', 'tags' => array(), 'age' => 0, 'other' => '0', 'array' => array(0)));
 
-		$this->assertFalse(fset::is_empty($a, 'Customer.name'));
-		$this->assertFalse(fset::is_empty($a, 'Customer.array'));
-		$this->assertTrue(fset::is_empty($a, 'Customer.phone'));
-		$this->assertTrue(fset::is_empty($a, 'Customer.tags'));
-		$this->assertTrue(fset::is_empty($a, 'Customer.age'));
-		$this->assertTrue(fset::is_empty($a, 'Customer.other'));
+		$this->assertFalse(Fset::is_empty($a, 'Customer.name'));
+		$this->assertFalse(Fset::is_empty($a, 'Customer.array'));
+		$this->assertTrue(Fset::is_empty($a, 'Customer.phone'));
+		$this->assertTrue(Fset::is_empty($a, 'Customer.tags'));
+		$this->assertTrue(Fset::is_empty($a, 'Customer.age'));
+		$this->assertTrue(Fset::is_empty($a, 'Customer.other'));
 	}
 
 	function testEquals() {
 		$a = array('Customer' => array('name' => 'John', 'age' => '30', 'tags' => array(), 'age' => 0, 'other' => '0', 'array' => array(0)));
 		$b = array('Customer' => array('name' => 'Bob', 'age' => 30, 'tags' => array(), 'age' => 0, 'other' => '0', 'array' => array(0)));
 
-		$result = fset::equals($a, $b, 'Customer.name');
+		$result = Fset::equals($a, $b, 'Customer.name');
 		$expected = false;
 		$this->assertIdentical($result, $expected);
 
-		$result = fset::equals($a, $b, 'Customer.age');
+		$result = Fset::equals($a, $b, 'Customer.age');
 		$expected = true;
 		$this->assertIdentical($result, $expected);
 
-		$result = fset::equals($a, $b, 'Customer.name', true);
+		$result = Fset::equals($a, $b, 'Customer.name', true);
 		$expected = false;
 		$this->assertIdentical($result, $expected);
 	}
