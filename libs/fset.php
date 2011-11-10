@@ -1,7 +1,7 @@
 <?php
 
 /**
- * fset class
+ * Fset class
  * A standalone lightweight class for manage arrays with dot notation.
  *
  * @author Carlos Gant <carlos@aicor.com>
